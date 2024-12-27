@@ -1,0 +1,54 @@
+server:
+  port: 8305
+
+spring:
+  application:
+    name: leyou-user
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: ${spring.cloud.nacos.server-addr}
+  # 修改数据源
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 配置初始化大小、最小、最大
+      initial-size: 2
+      min-idle: 2
+      max-active: 20
+      # 配置获取连接等待超时的时间
+      max-wait: 10000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      test-while-idle: true
+      #这里建议配置为TRUE，防止取到的连接不可用
+      test-on-borrow: true
+      test-on-return: false
+      #打开PSCache，并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query: SELECT 1
+      filters: stat,wall
+      stat-view-servlet:
+        login-username: leyouUser
+        login-password: leyouUser
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+mybatis:
+  mapper-locations: classpath*:/mapper/*.xml
+
+logging:
+  level:
+    root: info
+    org.mybatis: debug
+    org.springframework: warn
